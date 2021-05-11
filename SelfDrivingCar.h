@@ -70,6 +70,6 @@ void writeI2C(char reg, char value);
 char readI2C(char reg);
 
 
-void *sensingTheLeftLine(); // function that will be running on the IR scanning thread
-void *sensingTheRightLine(); // function that will be running on the lins senser thread
-void setup();  // function that will be called at the beginning of the program to initialize the WiringPi & its pins
+void *sensingTheLeftLine(); // function that will be running on the left line senser thread.
+void *sensingTheRightLine(); // function that will be running on the right line senser thread.
+void setup();  // function that will be called at the beginning of the program to initialize the WiringPi & its pins.
