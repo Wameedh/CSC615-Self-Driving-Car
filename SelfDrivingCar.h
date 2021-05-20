@@ -21,6 +21,8 @@
 #include <math.h>
 #include <stdint.h>
 #include <pthread.h>
+#include <stdbool.h>
+
 
 #define HIGH    1
 #define LOW     0
@@ -35,8 +37,21 @@
 //GPIO config
 // Pin number declarations. We're using the Broadcom chip pin numbers.
 // out pin of the IR Obstacle Sensor
-#define LEFT_LINE_SENSOR_PIN               28           // Broadcom pin# 11, GPIO17
-#define RIGHT_LINE_SENSOR_PIN              29              // Broadcom pin# 11, GPIO17
+#define LEFT_LINE_SENSOR_PIN               28           // Physical pin 38
+#define RIGHT_LINE_SENSOR_PIN              29           // Physical pin 40
+#define ECHO							   27      		//Physical pin 36
+#define TRIG							   25			//Physical pin 37
+#define IR_OBSTACLE						   24 			//physical pin 35				   
+
+// Speed of sound at sea level
+const double speedOfSoundMetersPerSecond = 340.29;
+//Time for echo location sensor
+static volatile long startTime;
+static volatile long travelTime;
+
+//IR obstacle
+// 1 if there is no obstacle on the way.
+static volatile int obstacleOn = 1;
 
 
 // 1 if there is no obstacle on the way.
@@ -70,7 +85,16 @@ void runTheMotor(int i, int speed);
 void writeI2C(char reg, char value);
 char readI2C(char reg);
 
+//Use these for the echo sound location sensor.
+void *recordPulse();
+bool isObstacleClose();
+
+
 
 void *sensingTheLeftLine(); // function that will be running on the left line senser thread.
 void *sensingTheRightLine(); // function that will be running on the right line senser thread.
 void setup();  // function that will be called at the beginning of the program to initialize the WiringPi & its pins.
+
+
+void *scanForObstacles();
+void maneuverObstacle();

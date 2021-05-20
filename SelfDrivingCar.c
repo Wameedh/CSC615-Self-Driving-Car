@@ -24,8 +24,8 @@ int fd; //file descriptor to read, and write to the I2C int returned from
 
 int main()
 {
-    pthread_t left_ls_thread_id, right_ls_thread_id; // threads ids
-    int error0, error1; // used to check if threads won't create
+    pthread_t left_ls_thread_id, right_ls_thread_id, utlrasonic_thread_id, sideObstacle_thread_id; // threads ids
+    int error0, error1, error2, error3; // used to check if threads won't create
    
     
     printf("Starting Program\n");
@@ -56,8 +56,13 @@ int main()
      error0 = pthread_create(&left_ls_thread_id, NULL, sensingTheLeftLine, NULL);
     // // creating thread that would be sensing for the line 
      error1 = pthread_create(&right_ls_thread_id, NULL, sensingTheRightLine, NULL);
+     
 
-    if (error0 || error1) {
+     
+     
+     error3 = pthread_create(&sideObstacle_thread_id, NULL, scanForObstacles, NULL );
+    
+    if (error0 || error1 || error3) {
          printf("Error: unable to create thread/s \n");
          exit(-1);
       }
@@ -86,6 +91,16 @@ int main()
             printf("Go Forward\n");
             Car_Forward();    
         }
+        if(isObstacleClose()) {
+            printf("I have found a stray kid\n");
+            Motor_Stop();
+            delay(3000);
+            maneuverObstacle();
+            pthread_join(utlrasonic_thread_id, NULL);
+                
+       
+            
+            }
         
         
         
@@ -94,6 +109,13 @@ int main()
     
      pthread_cancel(left_ls_thread_id); // This should be at the end of the program
      pthread_cancel(right_ls_thread_id); // This should be at the end of the program
+     //pthread_cancel(utlrasonic_thread_id);
+     pthread_cancel(sideObstacle_thread_id);
+
+
+
+
+
 
     // printf("Setting PWM\n");
     //Car_Forward();
@@ -420,12 +442,20 @@ void setup() {
             printf("WiringPi setup failed\n"); // WiringPi failed Check Here
             exit(0);
         }
+        
+        //setting the pins as in and out for the peripherals
         pinMode(LEFT_LINE_SENSOR_PIN, INPUT);
         pinMode(RIGHT_LINE_SENSOR_PIN, INPUT);
+        pinMode(ECHO, INPUT);
+        pinMode(TRIG, OUTPUT);
+        pinMode(IR_OBSTACLE,INPUT);
         
         //TRIG pin must start LOW
-        digitalWrite(LEFT_LINE_SENSOR_PIN, LOW);
-        digitalWrite(RIGHT_LINE_SENSOR_PIN, LOW);
+        //digitalWrite(LEFT_LINE_SENSOR_PIN, LOW);
+        //digitalWrite(RIGHT_LINE_SENSOR_PIN, LOW);
+        
+        
+        digitalWrite(TRIG, LOW);
         delay(30); // If we don't pause after setting it to low, sometimes the sensor doesn't work right. Source - online search!
 }
  
@@ -470,3 +500,124 @@ void *sensingTheRightLine() {
 /********************************************/
 
 }
+
+
+/********************************************/
+/* UltraSonic Sound Sensor Obstacle detection */
+/********************************************/
+
+void *recordPulse() {
+    while (1) {
+       
+        while(digitalRead(ECHO) == LOW); //Wait for echo start
+        startTime = micros();
+        while(digitalRead(ECHO) == HIGH);  //Wait for echo end
+        travelTime = micros() - startTime;
+    }
+}
+
+
+
+/******************************************/
+/*Get The distance of the */
+/******************************************/
+bool isObstacleOnTheSide() { 
+        /*
+         * Check if the rand is between 2cm and 200cm
+         * For 2cm the travelTime = would be 116
+         * For 200cm the travelTime = would be 11600
+         * We exit with o or succses, because we may not consider this an error but rather a condition.
+         * and that we may want to do something like stop the car if we are working on a car.
+        */
+        //Ultrasonic sensor
+        if(travelTime < 700){
+            printf("less than 16cm, the program will exit\n");
+            return true;
+        }
+        else {
+            return false;
+    }
+
+
+
+
+
+/******************************************/
+/*Get The distance of the */
+/******************************************/
+bool isObstacleClose() { 
+
+        // IR sensor
+        if(obstacleOn == 0){
+            printf("less than 10cm, the program will exit\n");
+            return true;
+        }
+        else {
+            return false;
+    }
+    
+    
+    
+    
+
+
+/****************************************/
+/*Scan for obstacles*/
+/***************************************/
+void *scanForObstacles() {
+    while (1) {
+        // keep reading the IR difital pin
+        if(digitalRead(IR_OUT_PIN) == HIGH)
+        {
+            // if high, means the IR reading clear and NO obstacle on the way
+            obstacleOn = 1;
+        }
+        if(digitalRead(IR_OUT_PIN) == LOW)
+        {
+            // if low, means the IR can't read clear and THERE is an obstacle on the way
+            obstacleOn = 0;
+        }
+
+    }
+}
+
+
+
+void maneuverObstacle() {
+    
+             error2 = pthread_create(&utlrasonic_thread_id, NULL, recordPulse , NULL);
+             
+             if(error2) {
+                 printf("Thread failed in maneuver Obstacle\n");
+                 exit(-1);
+                 }
+         if(isObstacleClose()) {
+                while(isObstacleClose()) {
+                Car_ShiftLeft();
+                
+                //depends on the track 
+                }
+                delay(500);
+                Motor_Stop();
+                 
+                while(!isObstacleOnTheSide) {
+                    Car_Forward();
+                    }
+                while (isObstacleOnTheSide) {
+                        Car_Forward();
+                        }
+                        delay(500);
+                        Motor_Stop();
+                while(leftLineSensing == 0) {
+                            Car_ShiftRight();
+                            }
+                
+                
+                }
+    
+    
+    
+    
+    
+    
+    }
