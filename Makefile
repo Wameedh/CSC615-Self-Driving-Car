@@ -5,7 +5,7 @@ FOPTION=
 RUNOPTIONS=
 CC=gcc
 CFLAGS= -g -I.
-LIBS = -lwiringPi -lpthread
+LIBS = -lwiringPi -lpthread -lm
 DEPS = SelfDrivingCar.h
 OBJ = $(ROOTNAME)$(HW)$(FOPTION).o
 
