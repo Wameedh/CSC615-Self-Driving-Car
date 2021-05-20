@@ -51,9 +51,9 @@ int main()
     PCA9685_SetPWMFreq(500);
 
     // creating thread that would be scanning for obstacles 
-    // error0 = pthread_create(&left_ls_thread_id, NULL, sensingTheLeftLine, NULL);
+     error0 = pthread_create(&left_ls_thread_id, NULL, sensingTheLeftLine, NULL);
     // // creating thread that would be sensing for the line 
-    // error1 = pthread_create(&right_ls_thread_id, NULL, sensingTheRightLine, NULL);
+     error1 = pthread_create(&right_ls_thread_id, NULL, sensingTheRightLine, NULL);
 
     if (error0 || error1) {
          printf("Error: unable to create thread/s \n");
@@ -81,8 +81,8 @@ int main()
         }
     }
     
-    // pthread_cancel(left_ls_thread_id); // This should be at the end of the program
-    // pthread_cancel(right_ls_thread_id); // This should be at the end of the program
+     pthread_cancel(left_ls_thread_id); // This should be at the end of the program
+     pthread_cancel(right_ls_thread_id); // This should be at the end of the program
 
     // printf("Setting PWM\n");
     //Car_Forward();
@@ -404,7 +404,7 @@ char readI2C(char reg)
 
 void setup() {
         // wiringPiSetupGpio();  // Initializes wiringPi using the Broadcom GPIO pin numbers
-        if(wiringPiSetupGpio() == -1) { 
+        if(wiringPiSetup() == -1) { 
             printf("WiringPi setup failed\n"); // WiringPi failed Check Here
             exit(0);
         }

@@ -20,6 +20,7 @@
 #include <wiringPiI2C.h>
 #include <math.h>
 #include <stdint.h>
+#include <pthread.h>
 
 #define HIGH    1
 #define LOW     0
@@ -34,8 +35,8 @@
 //GPIO config
 // Pin number declarations. We're using the Broadcom chip pin numbers.
 // out pin of the IR Obstacle Sensor
-#define LEFT_LINE_SENSOR_PIN              17              // Broadcom pin# 11, GPIO17
-#define RIGHT_LINE_SENSOR_PIN              27              // Broadcom pin# 11, GPIO17
+#define LEFT_LINE_SENSOR_PIN               29            // Broadcom pin# 11, GPIO17
+#define RIGHT_LINE_SENSOR_PIN              28              // Broadcom pin# 11, GPIO17
 
 
 // 1 if there is no obstacle on the way.
