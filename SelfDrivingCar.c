@@ -51,9 +51,9 @@ int main()
     PCA9685_SetPWMFreq(500);
 
     // creating thread that would be scanning for obstacles 
-    error0 = pthread_create(&left_ls_thread_id, NULL, sensingTheLeftLine, NULL);
-    // creating thread that would be sensing for the line 
-    error1 = pthread_create(&right_ls_thread_id, NULL, sensingTheRightLine, NULL);
+    // error0 = pthread_create(&left_ls_thread_id, NULL, sensingTheLeftLine, NULL);
+    // // creating thread that would be sensing for the line 
+    // error1 = pthread_create(&right_ls_thread_id, NULL, sensingTheRightLine, NULL);
 
     if (error0 || error1) {
          printf("Error: unable to create thread/s \n");
