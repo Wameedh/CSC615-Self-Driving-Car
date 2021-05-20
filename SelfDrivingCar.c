@@ -81,8 +81,8 @@ int main()
         }
     }
     
-    pthread_cancel(left_ls_thread_id); // This should be at the end of the program
-    pthread_cancel(right_ls_thread_id); // This should be at the end of the program
+    // pthread_cancel(left_ls_thread_id); // This should be at the end of the program
+    // pthread_cancel(right_ls_thread_id); // This should be at the end of the program
 
     // printf("Setting PWM\n");
     //Car_Forward();
