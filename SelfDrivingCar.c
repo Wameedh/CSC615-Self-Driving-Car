@@ -5,7 +5,7 @@
 *               Feras Alayoub (Manager), ID: 917942134, Github ID: ARM-Cortex-M4
 *               Wameedh Mohammed Ali, ID: 920678405, Github ID: wameedh
 *               Wilfredo Aceytuno Jolon, ID: 
-*               Rasul Imanov, ID:
+*               Rasul Imanov, ID: 920668590, Github ID: rimanov
 * Project: Final Group Project
 *
 * File: SelfDrivingCar.c
