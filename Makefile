@@ -1,7 +1,22 @@
-make: SelfDrivingCar.c
-	gcc SelfDrivingCar.c -lwiringPi -lm
 
-run: SelfDrivingCar.c
-	./a.out
-clean: SelfDrivingCar.c
-	rm a.out
+ROOTNAME=SelfDrivingCar
+HW=
+FOPTION=
+RUNOPTIONS=
+CC=gcc
+CFLAGS= -g -I.
+LIBS = -lwiringPi -lpthread
+DEPS = SelfDrivingCar.h
+OBJ = $(ROOTNAME)$(HW)$(FOPTION).o
+
+%.o: %.c $(DEPS)
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+$(ROOTNAME)$(HW)$(FOPTION): $(OBJ)
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+
+clean:
+	rm *.o $(ROOTNAME)$(HW)$(FOPTION)
+
+run: $(ROOTNAME)$(HW)$(FOPTION)
+	./$(ROOTNAME)$(HW)$(FOPTION) $(RUNOPTIONS)
