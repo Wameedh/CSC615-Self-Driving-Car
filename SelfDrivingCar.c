@@ -15,6 +15,8 @@
 **************************************************************/
 
 #include "SelfDrivingCar.h"
+int MOTORPOWER = 600;
+int MOTORPOWERROTATION = 700;
 
 // WiringPi pin# 29
 int fd; //file descriptor to read, and write to the I2C int returned from
@@ -61,10 +63,11 @@ int main()
       }
 
     // Program is on and sensing the line
-    while (1){ 
+    while (!(leftLineSensing == 1 && rightLineSensing == 1)){ 
 
         // Not sure if I need to add an else statment that would call Car_Forward() if the sensors are not on the line
-        // Need to test this logic to see if it does wokr or not
+        // Need to test this logic to see if it does work or not
+        
         if(leftLineSensing == 1){
             // Need to be tested, check the condution might need to be changed to "leftLineSensing == 0"
             printf("left sensor On the  line... turn left!\n");
@@ -79,6 +82,14 @@ int main()
            // the sensor on the right side of the line is on the line
            // Car must turn right until the sensor if off the line
         }
+        if(rightLineSensing == 0 && leftLineSensing == 0) {
+            printf("Go Forward\n");
+            Car_Forward();    
+        }
+        
+        
+        
+        
     }
     
      pthread_cancel(left_ls_thread_id); // This should be at the end of the program
@@ -107,32 +118,33 @@ void Car_Forward()
 {
 
     // Bacl Right Motor
-    PCA9685_SetPWM(0, 0, 1200);
+    PCA9685_SetPWM(0, 0, MOTORPOWER);
 
     PCA9685_SetPWM(1, 4095, 0);
 
     PCA9685_SetPWM(2, 0, 4095);
 
     //Back Left Motor
-    PCA9685_SetPWM(4, 0, 1200);
+    PCA9685_SetPWM(4, 0, MOTORPOWER);
 
     PCA9685_SetPWM(5, 0, 4095);
 
     PCA9685_SetPWM(6, 4095, 0);
 
     //Front Right Motor
-    PCA9685_SetPWM(8, 0, 1200);
+    PCA9685_SetPWM(8, 0, MOTORPOWER);
 
     PCA9685_SetPWM(9, 4095, 0);
 
     PCA9685_SetPWM(10, 0, 4095);
 
     //Front Left Motor
-    PCA9685_SetPWM(12, 0, 1200);
+    PCA9685_SetPWM(12, 0, MOTORPOWER);
 
     PCA9685_SetPWM(13, 4095, 0);
 
     PCA9685_SetPWM(14, 0, 4095);
+    
 }
 
 void Car_ShiftRight()
@@ -202,28 +214,28 @@ void Rotate_CarLeft()
 {
 
     // Back Right Motor
-    PCA9685_SetPWM(0, 0, 1200);
+    PCA9685_SetPWM(0, 0, MOTORPOWERROTATION);
 
     PCA9685_SetPWM(1, 4095, 0);
 
     PCA9685_SetPWM(2, 0, 4095);
 
     //Back Left Motor
-    PCA9685_SetPWM(4, 0, 1200);
+    PCA9685_SetPWM(4, 0, MOTORPOWERROTATION);
 
     PCA9685_SetPWM(5, 4095, 0);
 
     PCA9685_SetPWM(6, 0, 4095);
 
     //Front Right Motor
-    PCA9685_SetPWM(8, 0, 1200);
+    PCA9685_SetPWM(8, 0, MOTORPOWERROTATION);
 
     PCA9685_SetPWM(9, 4095, 0);
 
     PCA9685_SetPWM(10, 0, 4095);
 
     //Front Left Motor
-    PCA9685_SetPWM(12, 0, 1200);
+    PCA9685_SetPWM(12, 0, MOTORPOWERROTATION);
 
     PCA9685_SetPWM(13, 0, 4095);
 
@@ -234,28 +246,28 @@ void Rotate_CarRight()
 {
 
     // Back Right Motor
-    PCA9685_SetPWM(0, 0, 1200);
+    PCA9685_SetPWM(0, 0, MOTORPOWERROTATION);
 
     PCA9685_SetPWM(1, 0, 4095);
 
     PCA9685_SetPWM(2, 4095, 0);
 
     //Back Left Motor
-    PCA9685_SetPWM(4, 0, 1200);
+    PCA9685_SetPWM(4, 0, MOTORPOWERROTATION);
 
     PCA9685_SetPWM(5, 0, 4095);
 
     PCA9685_SetPWM(6, 4095, 0);
 
     //Front Right Motor
-    PCA9685_SetPWM(8, 0, 1200);
+    PCA9685_SetPWM(8, 0, MOTORPOWERROTATION);
 
     PCA9685_SetPWM(9, 0, 4095);
 
     PCA9685_SetPWM(10, 4095, 0);
 
     //Front Left Motor
-    PCA9685_SetPWM(12, 0, 1200);
+    PCA9685_SetPWM(12, 0, MOTORPOWERROTATION);
 
     PCA9685_SetPWM(13, 4095, 0);
 
