@@ -4,8 +4,8 @@
 * Group Members:
 *               Feras Alayoub (Manager), ID: 917942134, Github ID: ARM-Cortex-M4
 *               Wameedh Mohammed Ali, ID: 920678405, Github ID: wameedh
-*               Wilfredo Aceytuno Jolon, ID: 
 *               Rasul Imanov, ID: 920668590, Github ID: rimanov
+*               Wilfredo Aceytuno Jolon - Droped off from class!
 * Project: Final Group Project
 *
 * File: SelfDrivingCar.c
@@ -15,26 +15,36 @@
 **************************************************************/
 
 #include "SelfDrivingCar.h"
-int MOTORPOWER = 600;
-int MOTORPOWERROTATION = 700;
-
+int MOTORPOWER = 700;
+int MOTORPOWERROTATION = 750;
+int state = 1;
 // WiringPi pin# 29
 int fd; //file descriptor to read, and write to the I2C int returned from
 // wiringPiI2CSetup function call
 
+int error0, error1, error2, error3, error4;
+pthread_t left_ls_thread_id, right_ls_thread_id, utlrasonic_thread_id, sideObstacle_thread_id, trigger_thread;
+
 int main()
 {
+<<<<<<< HEAD
+ // threads ids
+     // used to check if threads won't create
+ //state = 0;
+    
+=======
     pthread_t left_ls_thread_id, right_ls_thread_id, utlrasonic_thread_id, sideObstacle_thread_id; // threads ids
     int error0, error1, error2, error3;                                                            // used to check if threads won't create
 
+>>>>>>> edd4a258eda19cdb00d46cc842246d745c27b848
     printf("Starting Program\n");
-    delay(5000);
+    delay(3000);
 
     setup(); // setup the wiringPi using GPIO pin numbers & set the pins mode.
 
     // wiringPiSetup moved into setup() method
     // if (wiringPiSetup() == -1)
-    // {
+    // { Self_Driving_Car
     //     printf("WiringPi setup failed\n"); // WiringPi failed Check Here
     // }
     Motor_Stop();
@@ -51,6 +61,40 @@ int main()
     //500 Hz or .002 Seconds
     PCA9685_SetPWMFreq(500);
 
+<<<<<<< HEAD
+    // creating thread that would be scanning for obstacles 
+     error0 = pthread_create(&left_ls_thread_id, NULL, sensingTheLeftLine, NULL);
+    // // creating thread that would be sensing for the line 
+     error1 = pthread_create(&right_ls_thread_id, NULL, sensingTheRightLine, NULL);
+     
+
+     
+     
+     error3 = pthread_create(&sideObstacle_thread_id, NULL, scanForObstacles, NULL );
+     
+    
+     
+    
+    if (error0 || error1 || error3) {
+         printf("Error: unable to create thread/s \n");
+         exit(-1);
+      }
+int count = 0;
+    // Program is on and sensing the line
+   // !(leftLineSensing == 1 && rightLineSensing == 1)
+    while (state){ 
+       // MOTORPOWER = 700;
+        // Not sure if I need to add an else statment that would call Car_Forward() if the sensors are not on the line
+        // Need to test this logic to see if it does work or not
+      /*  if(leftLineSensing == 1 && rightLineSensing == 1){
+           printf("Go Forward\n");
+           delay(900);
+           MOTORPOWER = 700;
+            Car_Forward();
+        }
+        */
+        while(leftLineSensing == 1 && rightLineSensing == 0){
+=======
     // creating thread that would be scanning for obstacles
     error0 = pthread_create(&left_ls_thread_id, NULL, sensingTheLeftLine, NULL);
     // // creating thread that would be sensing for the line
@@ -73,15 +117,22 @@ int main()
 
         if (leftLineSensing == 1)
         {
+>>>>>>> edd4a258eda19cdb00d46cc842246d745c27b848
             // Need to be tested, check the condution might need to be changed to "leftLineSensing == 0"
+          
             printf("left sensor On the  line... turn left!\n");
             Rotate_CarLeft();
             // the sensor on the left side of the line is on the line
             // Car must turn left until the sensor if off the line
         }
+<<<<<<< HEAD
+        while(rightLineSensing == 1 && leftLineSensing == 0){
+=======
         if (rightLineSensing == 1)
         {
+>>>>>>> edd4a258eda19cdb00d46cc842246d745c27b848
             // Need to be tested, check the condution might need to be changed to "rightLineSensing == 0"
+          
             printf("right sensor On the line... turn right!\n");
             Rotate_CarRight();
             // the sensor on the right side of the line is on the line
@@ -90,16 +141,42 @@ int main()
         if (rightLineSensing == 0 && leftLineSensing == 0)
         {
             printf("Go Forward\n");
+<<<<<<< HEAD
+           count += 1;
+           if (count == 500){
+               
+                 Car_Backward();
+          
+             delay(50);
+           } else {
+            Car_Forward();
+        }    
+        }
+      if(isObstacleClose()) {
+=======
             Car_Forward();
         }
         if (isObstacleClose())
         {
+>>>>>>> edd4a258eda19cdb00d46cc842246d745c27b848
             printf("I have found a stray kid\n");
             Motor_Stop();
             delay(3000);
             maneuverObstacle();
+<<<<<<< HEAD
+           // pthread_join(utlrasonic_thread_id, NULL);
+           // pthread_join(trigger_thread, NULL);
+       
+            
+            }
+        
+       
+        
+        
+=======
             pthread_join(utlrasonic_thread_id, NULL);
         }
+>>>>>>> edd4a258eda19cdb00d46cc842246d745c27b848
     }
 
     pthread_cancel(left_ls_thread_id);  // This should be at the end of the program
@@ -182,7 +259,7 @@ void Car_ShiftRight()
     PCA9685_SetPWM(10, 4095, 0);
 
     //Front Left Motor
-    PCA9685_SetPWM(12, 0, 1200);
+    PCA9685_SetPWM(12, 0, 1300);
 
     PCA9685_SetPWM(13, 4095, 0);
 
@@ -214,7 +291,7 @@ void Car_ShiftLeft()
     PCA9685_SetPWM(10, 0, 4095);
 
     //Front Left Motor
-    PCA9685_SetPWM(12, 0, 1200);
+    PCA9685_SetPWM(12, 0, 1300);
 
     PCA9685_SetPWM(13, 0, 4095);
 
@@ -494,6 +571,12 @@ void *sensingTheRightLine()
 /* UltraSonic Sound Sensor Obstacle detection */
 /********************************************/
 
+<<<<<<< HEAD
+void *recordPulse() {
+    while (maneuver == 1) {
+       
+        while(digitalRead(ECHO) == LOW); //Wait for echo start
+=======
 void *recordPulse()
 {
     while (1)
@@ -501,6 +584,7 @@ void *recordPulse()
 
         while (digitalRead(ECHO) == LOW)
             ; //Wait for echo start
+>>>>>>> edd4a258eda19cdb00d46cc842246d745c27b848
         startTime = micros();
         while (digitalRead(ECHO) == HIGH)
             ; //Wait for echo end
@@ -530,6 +614,7 @@ bool isObstacleOnTheSide()
     {
         return false;
     }
+}
 
     /******************************************/
     /*Get The distance of the */
@@ -543,15 +628,39 @@ bool isObstacleOnTheSide()
             printf("less than 10cm, the program will exit\n");
             return true;
         }
+<<<<<<< HEAD
+        else {
+            return false;
+        }
+    }
+    
+    
+    
+    
+
+
+/****************************************/
+/*Scan for obstacles*/
+/***************************************/
+void *scanForObstacles() {
+    while (1) {
+        // keep reading the IR difital pin
+        if(digitalRead(IR_OBSTACLE) == HIGH)
+=======
         else
+>>>>>>> edd4a258eda19cdb00d46cc842246d745c27b848
         {
             return false;
         }
+<<<<<<< HEAD
+        if(digitalRead(IR_OBSTACLE) == LOW)
+=======
 
         /****************************************/
         /*Scan for obstacles*/
         /***************************************/
         void *scanForObstacles()
+>>>>>>> edd4a258eda19cdb00d46cc842246d745c27b848
         {
             while (1)
             {
@@ -585,6 +694,75 @@ bool isObstacleOnTheSide()
                 {
                     Car_ShiftLeft();
 
+<<<<<<< HEAD
+void maneuverObstacle() {
+    
+            // error4 = pthread_create(&trigger_thread, NULL, trigger, NULL );
+            // error2 = pthread_create(&utlrasonic_thread_id, NULL, recordPulse , NULL);
+            
+           /*  
+             if(error2 || error4) {
+                 printf("Thread failed in maneuver Obstacle\n");
+                 exit(-1);
+                 }
+                 * */
+                 while(isObstacleClose()){
+                   Car_ShiftLeft();
+                   delay(750);
+               }
+                    Car_Forward();
+                    delay(1000);
+                    while (leftLineSensing == 0){
+                     Car_ShiftRight();
+                 }
+                 
+                 
+                 /*
+         if(isObstacleClose()) {
+                while(isObstacleClose()) {
+                Car_ShiftLeft();
+                printf("Car shifting left till obstacle not visible\n");
+                //depends on the track 
+                }
+                delay(500);
+                Motor_Stop();
+                while(!isObstacleOnTheSide) {
+                    Car_Forward();
+                    printf("Car going forwaard until obstacle is visible\n");
+                    }
+                while (isObstacleOnTheSide) {
+                        Car_Forward();
+                        printf("Car going forward untill obstacle is not sensed\n");
+                        }
+                        delay(500);
+                        Motor_Stop();
+                while(leftLineSensing == 0) {
+                            Car_ShiftRight();
+                            printf("Shifting unitll leftline hits the black part then we are back on the line\n");
+                            }
+                maneuver = 0;
+                
+                }
+                * */
+    
+    }
+    
+    
+    
+ void *trigger() {
+     
+     
+    while(maneuver == 1){
+       digitalWrite(TRIG, HIGH);
+        delayMicroseconds(20);
+        digitalWrite(TRIG, LOW);
+
+
+ }
+     
+     
+     }   
+=======
                     //depends on the track
                 }
                 delay(500);
@@ -606,3 +784,4 @@ bool isObstacleOnTheSide()
                 }
             }
         }
+>>>>>>> edd4a258eda19cdb00d46cc842246d745c27b848

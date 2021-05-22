@@ -4,8 +4,8 @@
 * Group Members:
 *               Feras Alayoub (Manager), ID: 917942134, Github ID: ARM-Cortex-M4
 *               Wameedh Mohammed Ali, ID: 920678405, Github ID: wameedh
-*               Wilfredo Aceytuno Jolon, ID: 
-*               Rasul Imanov, ID: 910, Github ID: rimanov
+*               Rasul Imanov, ID: 920668590, Github ID: rimanov
+*               Wilfredo Aceytuno Jolon - Droped off from class!
 * Project: Final Group Project
 *
 * File: SelfDrivingCar.h
@@ -48,7 +48,7 @@ const double speedOfSoundMetersPerSecond = 340.29;
 //Time for echo location sensor
 static volatile long startTime;
 static volatile long travelTime;
-
+static volatile int maneuver = 1;
 //IR obstacle
 // 1 if there is no obstacle on the way.
 static volatile int obstacleOn = 1;
@@ -98,3 +98,4 @@ void setup();  // function that will be called at the beginning of the program t
 
 void *scanForObstacles();
 void maneuverObstacle();
+void *trigger();
